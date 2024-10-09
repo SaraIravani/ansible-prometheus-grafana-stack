@@ -1,0 +1,12 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: Install dependencies
+      apt:
+        name:
+          - wget
+          - curl
+          - tar
+        state: present
+        update_cache: true
+
