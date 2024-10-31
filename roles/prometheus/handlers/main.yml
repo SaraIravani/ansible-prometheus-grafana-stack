@@ -1,2 +1,8 @@
 ---
-# handlers file for prometheus
+# Handler to enable and start the Prometheus service
+- name: Enable and start Prometheus service
+  systemd:
+    name: prometheus
+    enabled: yes
+    state: started
+

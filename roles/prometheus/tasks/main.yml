@@ -1,2 +1,5 @@
 ---
-# tasks file for prometheus
+# This will include the Prometheus tasks from prometheus.yml
+- name: Include Prometheus tasks
+  import_tasks: prometheus.yml
+

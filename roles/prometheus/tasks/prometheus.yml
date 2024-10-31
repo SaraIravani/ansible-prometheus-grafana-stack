@@ -1,0 +1,81 @@
+---
+- name: Ensure Prometheus group exists
+  group:
+    name: "{{ prometheus_group }}"
+    state: present
+
+- name: Ensure Prometheus user exists
+  user:
+    name: "{{ prometheus_user }}"
+    group: "{{ prometheus_group }}"
+    home: "{{ prometheus_install_dir }}"
+    shell: /bin/false
+    state: present
+
+- name: Create Prometheus installation directory
+  file:
+    path: "{{ prometheus_install_dir }}"
+    state: directory
+    owner: "{{ file_owner }}"
+    group: "{{ file_group }}"
+    mode: 0755
+
+- name: Download Prometheus
+  get_url:
+    url: "{{ prometheus_download_url }}"
+    dest: /tmp/prometheus.tar.gz
+
+- name: Extract Prometheus
+  unarchive:
+    src: /tmp/prometheus.tar.gz
+    dest: "{{ prometheus_install_dir }}"
+    remote_src: yes
+
+- name: Set ownership for Prometheus directory
+  file:
+    path: "{{ prometheus_install_dir }}"
+    owner: "{{ file_owner }}"
+    group: "{{ file_group }}"
+    mode: "{{ file_mode }}"
+    state: directory
+    recurse: yes
+
+- name: Copy Prometheus configuration
+  template:
+    src: prometheus.yml.j2
+    dest: "{{ prometheus_install_dir }}/prometheus/prometheus.yml"
+    owner: "{{ file_owner }}"
+    group: "{{ file_group }}"
+    mode: "{{ file_mode }}"
+
+- name: Create Prometheus service
+  copy:
+    content: |
+      [Unit]
+      Description=Prometheus Monitoring
+      Wants=network-online.target
+      After=network-online.target
+
+      [Service]
+      User={{ prometheus_user }}
+      Group={{ prometheus_group }}
+      ExecStart={{ prometheus_install_dir }}/prometheus/prometheus \
+        --config.file={{ prometheus_install_dir }}/prometheus/prometheus.yml \
+        --storage.tsdb.path={{ prometheus_install_dir }}/data \
+        --web.listen-address=0.0.0.0:9090 \
+        --web.external-url=
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: /etc/systemd/system/prometheus.service
+    owner: "{{ file_owner }}"
+    group: "{{ file_group }}"
+    mode: "{{ file_mode }}"
+
+  notify:
+    - Enable and start Prometheus service
+
+- name: Reload systemd to pick up new Prometheus service
+  systemd:
+    daemon_reload: true
+
