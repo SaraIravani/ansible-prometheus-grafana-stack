@@ -1,13 +1,12 @@
 ---
----
 # Variables for file permissions
-file_owner: root
-file_group: root
-file_mode: '0644'
+file_owner: "prometheus" 
+file_group: "prometheus" 
+file_mode: '0755'
 
 # Prometheus-specific variables
-prometheus_user: prometheus
-prometheus_group: prometheus
-prometheus_install_dir: /opt/prometheus
-prometheus_download_url: https://github.com/prometheus/prometheus/releases/download/v2.41.0/prometheus-2.41.0.linux-amd64.tar.gz
+prometheus_user: "prometheus" 
+prometheus_group: "prometheus" 
+prometheus_install_dir: "/opt/prometheus"
+prometheus_download_url: "https://github.com/prometheus/prometheus/releases/download/v2.41.0/prometheus-2.41.0.linux-amd64.tar.gz"
 

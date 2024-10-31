@@ -1,0 +1,9 @@
+---
+- name: Install Prometheus
+  hosts: all
+  become: true
+  roles:
+    - role: prometheus
+      vars:
+        include_prometheus: true
+

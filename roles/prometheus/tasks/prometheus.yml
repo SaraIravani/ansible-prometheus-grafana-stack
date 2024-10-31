@@ -20,6 +20,14 @@
     group: "{{ file_group }}"
     mode: 0755
 
+- name: Create Prometheus configuration directory
+  file:
+    path: "{{ prometheus_install_dir }}/prometheus"
+    state: directory
+    owner: "{{ file_owner }}"
+    group: "{{ file_group }}"
+    mode: 0755
+
 - name: Download Prometheus
   get_url:
     url: "{{ prometheus_download_url }}"
@@ -42,7 +50,7 @@
 
 - name: Copy Prometheus configuration
   template:
-    src: prometheus.yml.j2
+    src: templates/prometheus.yml.j2
     dest: "{{ prometheus_install_dir }}/prometheus/prometheus.yml"
     owner: "{{ file_owner }}"
     group: "{{ file_group }}"
