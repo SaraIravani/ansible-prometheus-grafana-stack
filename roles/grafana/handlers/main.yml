@@ -1,2 +1,6 @@
 ---
-# handlers file for grafana
+- name: Restart Grafana
+  systemd:
+    name: "{{ grafana_service_name }}"
+    state: restarted
+

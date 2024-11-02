@@ -1,0 +1,14 @@
+[Unit]
+Description=Grafana
+After=network.target
+
+[Service]
+User={{ grafana_user }}
+ExecStart={{ grafana_install_dir }}/bin/grafana-server \
+  --config={{ grafana_install_dir }}/conf/defaults.ini \
+  --homepath={{ grafana_install_dir }}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

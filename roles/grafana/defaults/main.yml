@@ -1,2 +1,11 @@
 ---
-# defaults file for grafana
+
+grafana_version: "9.4.3"  # Specify the Grafana version you want
+grafana_download_url: "https://dl.grafana.com/oss/release/grafana-{{ grafana_version }}.linux-amd64.tar.gz"
+grafana_user: grafana
+grafana_install_dir: /opt/grafana
+grafana_service_name: grafana
+file_owner: root
+file_group: root
+file_mode: "0644"
+
