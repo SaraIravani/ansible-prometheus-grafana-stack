@@ -1,2 +1,7 @@
 ---
-# handlers file for node_exporter
+- name: Enable and start Node Exporter service
+  systemd:
+    name: node_exporter
+    state: started
+    enabled: true
+

@@ -1,2 +1,12 @@
 ---
-# vars file for node_exporter
+# Variables for file permissions
+file_owner: "node_exporter"
+file_group: "node_exporter"
+file_mode: '0755'
+
+# Node Exporter-specific variables
+node_exporter_user: "node_exporter"
+node_exporter_group: "node_exporter"
+node_exporter_install_dir: "/opt/node_exporter"
+node_exporter_download_url: "https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz"
+

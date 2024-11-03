@@ -1,2 +1,77 @@
 ---
-# tasks file for node_exporter
+- name: Ensure Node Exporter group exists
+  group:
+    name: "{{ node_exporter_group }}"
+    state: present
+
+- name: Ensure Node Exporter user exists
+  user:
+    name: "{{ node_exporter_user }}"
+    group: "{{ node_exporter_group }}"
+    home: "{{ node_exporter_install_dir }}"
+    shell: /bin/false
+    state: present
+
+- name: Create Node Exporter installation directory
+  file:
+    path: "{{ node_exporter_install_dir }}"
+    state: directory
+    owner: "{{ file_owner }}"
+    group: "{{ file_group }}"
+    mode: 0755
+
+- name: Create Node Exporter extraction directory
+  file:
+    path: "/opt/node_exporter"
+    state: directory
+    owner: "{{ file_owner }}"
+    group: "{{ file_group }}"
+    mode: 0755
+
+- name: Download Node Exporter
+  get_url:
+    url: "{{ node_exporter_download_url }}"
+    dest: /tmp/node_exporter.tar.gz
+
+- name: Extract Node Exporter
+  unarchive:
+    src: /tmp/node_exporter.tar.gz
+    dest: "/opt/node_exporter"
+    remote_src: yes
+
+- name: Set ownership for Node Exporter directory
+  file:
+    path: "/opt/node_exporter"
+    owner: "{{ file_owner }}"
+    group: "{{ file_group }}"
+    mode: "{{ file_mode }}"
+    state: directory
+    recurse: yes
+
+- name: Create Node Exporter service
+  copy:
+    content: |
+      [Unit]
+      Description=Node Exporter
+      Wants=network-online.target
+      After=network-online.target
+
+      [Service]
+      User={{ node_exporter_user }}
+      Group={{ node_exporter_group }}
+      ExecStart={{ node_exporter_install_dir }}/node_exporter
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: /etc/systemd/system/node_exporter.service
+    owner: "{{ file_owner }}"
+    group: "{{ file_group }}"
+    mode: "{{ file_mode }}"
+
+  notify:
+    - Enable and start Node Exporter service
+
+- name: Reload systemd to pick up new Node Exporter service
+  systemd:
+    daemon_reload: true
+
