@@ -1,0 +1,26 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 3h
+# receiver: 'slack_notifications'
+  receiver: 'email_notifications'
+
+
+receivers:
+  - name: 'slack_notifications'
+    slack_configs:
+  #   - api_url: '{{ lookup("env", "ALERTMANAGER_SLACK_API_URL") }}'
+  #     channel: '#alerts'
+
+  - name: 'email_notifications'
+    email_configs:
+      - to: '{{ alertmanager_email_to }}'
+        from: '{{ alertmanager_email_from }}'
+        smarthost: '{{ alertmanager_email_smtp_server }}:{{ alertmanager_email_smtp_port }}'
+        auth_username: "alertmanager@yourdomain.com"
+        auth_password: '{{ lookup("env", "ALERTMANAGER_EMAIL_PASSWORD") }}'
+

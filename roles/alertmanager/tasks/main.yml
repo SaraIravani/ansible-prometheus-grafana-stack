@@ -1,0 +1,42 @@
+---
+- name: Install Alertmanager
+  apt:
+    name: "alertmanager={{ alertmanager_version }}"
+    state: present
+    update_cache: true
+
+- name: Enable Alertmanager service
+  systemd:
+    name: alertmanager
+    enabled: yes
+    state: started
+
+- name: Create Alertmanager configuration file
+  template:
+    src: "alertmanager.yml.j2"
+    dest: "{{ alertmanager_install_dir }}/alertmanager.yml"
+    mode: '0644'
+
+- name: Create Alertmanager service file
+  copy:
+    dest: "{{ alertmanager_service_file }}"
+    content: |
+      [Unit]
+      Description=Alertmanager
+      After=network.target
+
+      [Service]
+      User={{ alertmanager_user }}
+      ExecStart={{ alertmanager_install_dir }}/alertmanager --config.file={{ alertmanager_install_dir }}/alertmanager.yml
+
+      [Install]
+      WantedBy=default.target
+    mode: '0644'
+
+- name: Enable and start Alertmanager service
+  systemd:
+    name: alertmanager
+    enabled: yes
+    state: started
+    daemon_reload: true
+

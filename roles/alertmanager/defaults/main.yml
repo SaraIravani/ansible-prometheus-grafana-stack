@@ -1,0 +1,8 @@
+---
+# defaults file for alertmanager
+alertmanager_version: "0.24.0"
+alertmanager_user: "alertmanager"
+alertmanager_group: "alertmanager"
+alertmanager_install_dir: "/opt/alertmanager"
+alertmanager_service_file: "/etc/systemd/system/alertmanager.service"
+

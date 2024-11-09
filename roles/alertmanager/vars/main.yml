@@ -1,0 +1,9 @@
+---
+# vars file for alertmanager
+# Slack API URL (commented out since not using Slack for now)
+#alertmanager_slack_api_url: "https://hooks.slack.com/services/your/webhook/url"
+alertmanager_email_from: "sarairavani@outlook.com"
+#alertmanager_email_to: "devops-team@yourdomain.com"
+#alertmanager_email_smtp_server: "smtp.yourdomain.com"
+#alertmanager_email_smtp_port: 587
+
