@@ -5,10 +5,3 @@
   roles:
     - role: alertmanager
 
-- name: Create alertmanager.yml
-  template:
-    src: alertmanager.yml.j2
-    dest: /etc/alertmanager/alertmanager.yml
-  vars:
-    alertmanager_api_password: "{{ lookup('env', 'ALERTMANAGER_API_PASSWORD') }}"
-

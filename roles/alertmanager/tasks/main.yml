@@ -1,9 +1,40 @@
 ---
-- name: Install Alertmanager
-  apt:
-    name: "alertmanager={{ alertmanager_version }}"
-    state: present
-    update_cache: true
+- name: Create alertmanager user and group
+  ansible.builtin.user:
+    name: "{{ alertmanager_user }}"
+    group: "{{ alertmanager_group }}"
+    system: yes
+    shell: /usr/sbin/nologin
+  when: alertmanager_user != "root"
+
+- name: Set permissions on Alertmanager directory
+  file:
+    path: "{{ alertmanager_install_dir }}"
+    owner: "{{ alertmanager_user }}"
+    group: "{{ alertmanager_group }}"
+    recurse: yes
+
+- name: Download Alertmanager
+  get_url:
+    url: "{{ alertmanager_download_url }}"
+    dest: "/tmp/alertmanager-{{ alertmanager_version }}.tar.gz"
+    mode: '0644'
+
+- name: Create Alertmanager extraction directory
+  file:
+    path: "{{ alertmanager_install_dir }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ alertmanager_user }}"
+    group: "{{ alertmanager_group }}"
+
+- name: Extract Alertmanager
+  unarchive:
+    src: "/tmp/alertmanager-{{ alertmanager_version }}.tar.gz"
+    dest: "{{ alertmanager_install_dir }}"
+    remote_src: yes
+  args:
+    creates: "{{ alertmanager_install_dir }}/alertmanager"
 
 - name: Enable Alertmanager service
   systemd:

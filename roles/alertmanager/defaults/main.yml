@@ -1,8 +1,12 @@
 ---
 # defaults file for alertmanager
-alertmanager_version: "0.24.0"
+alertmanager_version: "0.24.0" # Replace with the desired version
+alertmanager_package: "alertmanager={{ alertmanager_version }}"  
 alertmanager_user: "alertmanager"
 alertmanager_group: "alertmanager"
 alertmanager_install_dir: "/opt/alertmanager"
 alertmanager_service_file: "/etc/systemd/system/alertmanager.service"
+alertmanager_download_url: "https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz"
+
+
 
