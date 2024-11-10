@@ -3,6 +3,8 @@
 alertmanager_version: "0.24.0" # Replace with the desired version
 alertmanager_package: "alertmanager={{ alertmanager_version }}"  
 alertmanager_user: "alertmanager"
+file_owner: "alertmanager" 
+file_group: "alertmanager" 
 alertmanager_group: "alertmanager"
 alertmanager_install_dir: "/opt/alertmanager"
 alertmanager_service_file: "/etc/systemd/system/alertmanager.service"

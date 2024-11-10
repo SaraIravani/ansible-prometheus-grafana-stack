@@ -1,6 +1,8 @@
 ---
-- name: Restart Alertmanager
+- name: Enable and start Alertmanager service
   systemd:
     name: alertmanager
-    state: restarted
+    state: started
+    enabled: true
+
 

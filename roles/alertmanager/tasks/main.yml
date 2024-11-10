@@ -1,24 +1,24 @@
 ---
-- name: Create alertmanager user and group
-  ansible.builtin.user:
-    name: "{{ alertmanager_user }}"
-    group: "{{ alertmanager_group }}"
-    system: yes
-    shell: /usr/sbin/nologin
-  when: alertmanager_user != "root"
+- name: Ensure Alertmanager group exists
+  group:
+    name: "{{ alertmanager_group }}"
+    state: present
 
-- name: Set permissions on Alertmanager directory
+- name: Ensure Alertmanager user exists
+  user:
+    name: "{{alertmanager_user}}"
+    group: "{{ alertmanager_group }}"
+    home: "{{ alertmanager_install_dir }}"
+    shell: /bin/false
+    state: present
+
+- name: Create Alertmanager installation directory
   file:
     path: "{{ alertmanager_install_dir }}"
-    owner: "{{ alertmanager_user }}"
-    group: "{{ alertmanager_group }}"
-    recurse: yes
-
-- name: Download Alertmanager
-  get_url:
-    url: "{{ alertmanager_download_url }}"
-    dest: "/tmp/alertmanager-{{ alertmanager_version }}.tar.gz"
-    mode: '0644'
+    state: directory
+    owner: "{{ file_owner }}"
+    group: "{{ file_group }}"
+    mode: 0755
 
 - name: Create Alertmanager extraction directory
   file:
@@ -28,25 +28,30 @@
     owner: "{{ alertmanager_user }}"
     group: "{{ alertmanager_group }}"
 
+- name: Download Alertmanager
+  get_url:
+    url: "{{ alertmanager_download_url }}"
+    dest: "/tmp/alertmanager-{{ alertmanager_version }}.tar.gz"
+    mode: '0644'
+
 - name: Extract Alertmanager
   unarchive:
     src: "/tmp/alertmanager-{{ alertmanager_version }}.tar.gz"
     dest: "{{ alertmanager_install_dir }}"
     remote_src: yes
-  args:
-    creates: "{{ alertmanager_install_dir }}/alertmanager"
 
-- name: Enable Alertmanager service
-  systemd:
-    name: alertmanager
-    enabled: yes
-    state: started
+- name: Set permissions on Alertmanager directory
+  file:
+    path: "{{ alertmanager_install_dir }}"
+    owner: "{{ alertmanager_user }}"
+    group: "{{ alertmanager_group }}"
+    recurse: yes
 
-- name: Create Alertmanager configuration file
-  template:
-    src: "alertmanager.yml.j2"
-    dest: "{{ alertmanager_install_dir }}/alertmanager.yml"
-    mode: '0644'
+#- name: Create Alertmanager configuration file
+  #template:
+    #src: "alertmanager.yml.j2"
+    #dest: "{{ alertmanager_install_dir }}/alertmanager.yml"
+    #mode: '0644'
 
 - name: Create Alertmanager service file
   copy:
@@ -63,6 +68,9 @@
       [Install]
       WantedBy=default.target
     mode: '0644'
+
+  notify:
+    - Enable and start Alertmanager service 
 
 - name: Enable and start Alertmanager service
   systemd:

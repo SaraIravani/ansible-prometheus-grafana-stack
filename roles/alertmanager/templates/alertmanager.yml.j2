@@ -7,7 +7,7 @@ route:
   group_interval: 5m
   repeat_interval: 3h
 # receiver: 'slack_notifications'
-  receiver: 'email_notifications'
+# receiver: 'email_notifications'
 
 
 receivers:
@@ -18,9 +18,9 @@ receivers:
 
   - name: 'email_notifications'
     email_configs:
-      - to: '{{ alertmanager_email_to }}'
-        from: '{{ alertmanager_email_from }}'
-        smarthost: '{{ alertmanager_email_smtp_server }}:{{ alertmanager_email_smtp_port }}'
-        auth_username: "alertmanager@yourdomain.com"
-        auth_password: '{{ lookup("env", "ALERTMANAGER_EMAIL_PASSWORD") }}'
+  #    - to: '{{ alertmanager_email_to }}'
+  #      from: '{{ alertmanager_email_from | default("alertmanager@yourdomain.com") }}'
+  #      smarthost: '{{ alertmanager_email_smtp_server }}:{{ alertmanager_email_smtp_port }}'
+  #      auth_username: "alertmanager@yourdomain.com"
+  #      auth_password: '{{ lookup("env", "ALERTMANAGER_EMAIL_PASSWORD") }}'
 
